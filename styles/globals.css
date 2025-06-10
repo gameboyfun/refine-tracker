@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-secondary\/10 {
+  content: var(--tw-content);
+  background-color: hsl(var(--heroui-secondary) / 0.1);
+}
+
+.bg-warning\/10 {
+  content: var(--tw-content);
+  background-color: hsl(var(--heroui-warning) / 0.1);
+}
+
+.bg-danger\/10 {
+  content: var(--tw-content);
+  background-color: hsl(var(--heroui-danger) / 0.1);
+}
+
+.bg-success\/10 {
+  content: var(--tw-content);
+  background-color: hsl(var(--heroui-success) / 0.1);
+}
+
+.bg-primary\/10 {
+  content: var(--tw-content);
+  background-color: hsl(var(--heroui-primary) / 0.1);
+}
+
+.border-secondary\/20 {
+  border-color: hsl(var(--heroui-secondary) / 0.2);
+}
+
+.border-warning\/20 {
+  border-color: hsl(var(--heroui-warning) / 0.2);
+}
+
+.border-danger\/20 {
+  border-color: hsl(var(--heroui-danger) / 0.2);
+}
+
+.border-success\/20 {
+  border-color: hsl(var(--heroui-success) / 0.2);
+}
+
+.border-primary\/20 {
+  border-color: hsl(var(--heroui-primary) / 0.2);
+}

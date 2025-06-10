@@ -1,0 +1,7 @@
+{
+  "extends": [ 
+    //"./src/framework/eslint-rules/index.js", 
+    "prettier",
+    "next/core-web-vitals"
+  ]
+}
