@@ -20,8 +20,8 @@ export default function useBusinessLogic() {
         timeout: 2000
       })
 
-      const audio = new Audio(`/sounds/refine-${type}.mp3`)
-      audio.play()
+      // const audio = new Audio(`/sounds/refine-${type}.mp3`)
+      // audio.play()
     }, 1000),
     []
   )
