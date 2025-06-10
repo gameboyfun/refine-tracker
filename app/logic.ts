@@ -36,12 +36,12 @@ export default function useBusinessLogic() {
     const failRefines = `${totalFail}`
     const successRateString = totalRefines > 0 ? `${successRate.toFixed(2)}%` : `0.00%`
 
-    const successColor = useMemo(() => {
+    const successColor = (() => {
       if (totalRefines === 0) return 'secondary'
       else if (successRate === 50) return 'warning'
 
-      return (totalSuccess / totalRefines) * 100 >= 50 ? 'success' : 'danger'
-    }, [totalSuccess, totalRefines])
+      return successRate >= 50 ? 'success' : 'danger'
+    })()
 
     return {
       successRefines,
