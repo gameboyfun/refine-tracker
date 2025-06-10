@@ -53,7 +53,7 @@ export const Chart = ({ refines }: ChartProps) => {
           return [
             ...acc,
             {
-              time: acc.length + 1,
+              time: acc.length,
               score: previousScore + newScore,
               type: refine ? 'success' : 'fail'
             }
@@ -74,18 +74,27 @@ export const Chart = ({ refines }: ChartProps) => {
   const filteredData = !maxEntries ? cumulativeData : cumulativeData.slice(-maxEntries)
 
   // Calculate EMA12 for the filtered scores
-  const scores = cumulativeData.map((item) => item.score)
-  const ema12Values = calculateEMA(scores, 12)
+  const ema12Values = useMemo(
+    () =>
+      calculateEMA(
+        cumulativeData.map((item) => item.score),
+        12
+      ),
+    [cumulativeData]
+  )
 
   // Add EMA12 to the data (only for entries that have EMA12 calculated)
-  const chartData = filteredData.map((item, index) => ({
-    ...item,
-    ema12: ema12Values[index] !== undefined ? ema12Values[index] : null
-  }))
+  const chartData = useMemo(() => {
+  const emaValuesForChart = maxEntries
+    ? ema12Values.slice(-Number(maxEntries))
+    : ema12Values;
 
-  // Check if we should show EMA12 line
-  // const shouldShowEMA12 = cumulativeData.length >= 12
-  const shouldShowEMA12 = true
+  return filteredData.map((item, index) => ({
+    ...item,
+    ema12: emaValuesForChart[index] !== undefined ? emaValuesForChart[index] : null,
+  }));
+}, [maxEntries, ema12Values, filteredData]);
+
 
   const handleMaxEntriesChange = (value: string) => {
     setMaxEntries(value)
@@ -165,7 +174,6 @@ export const Chart = ({ refines }: ChartProps) => {
                 dot={false}
                 activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2, fill: '#1e40af' }}
               />
-              {/* {shouldShowEMA12 && ( */}
               <Line
                 type='monotone'
                 dataKey='ema12'
@@ -175,18 +183,10 @@ export const Chart = ({ refines }: ChartProps) => {
                 strokeDasharray='5 5'
                 connectNulls={false}
               />
-              {/* )} */}
             </LineChart>
           </ResponsiveContainer>
           <div className='text-xs text-slate-400 mt-2'>
             <div>Success refines: +1 point • Failed refines: -1 point</div>
-            {shouldShowEMA12 ? (
-              <div>EMA12: 12-period Exponential Moving Average (orange dashed line)</div>
-            ) : (
-              <div>
-                EMA12: Requires at least 12 refines to display ({cumulativeData.length - 1}/12)
-              </div>
-            )}
           </div>
         </div>
       </CardBody>
