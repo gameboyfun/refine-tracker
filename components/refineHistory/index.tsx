@@ -5,7 +5,8 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerHeader,
-  ScrollShadow
+  ScrollShadow,
+  Tooltip
 } from '@heroui/react'
 import { CheckIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import useBusinessLogic from './logic'
@@ -44,6 +45,17 @@ export const RefineHistory = ({
         {(onClose) => (
           <>
             <DrawerHeader className='p-6 pb-0'>
+              <Tooltip content='Close'>
+                <Button
+                  isIconOnly
+                  className='text-default-400 mr-2'
+                  size='sm'
+                  variant='light'
+                  onPress={onClose}
+                >
+                  <XMarkIcon className='w-5 h-5' />
+                </Button>
+              </Tooltip>
               <h3 className='text-2xl font-semibold text-white'>Recent Refines</h3>
             </DrawerHeader>
             <Divider className='my-4' />
