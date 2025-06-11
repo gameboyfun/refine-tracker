@@ -3,7 +3,7 @@ import useBusinessLogic from './logic'
 import { DocumentArrowDownIcon, DocumentArrowUpIcon } from '@heroicons/react/24/outline'
 
 export default function ManageDataButton({ refines, onImportSuccess }: ManageDataButtonProps) {
-  const { fileInputRef, handleFileSelect, handleClick, exportTrades } = useBusinessLogic({ refines, onImportSuccess})
+  const { fileInputRef, handleFileSelect, handleClick, exportData } = useBusinessLogic({ refines, onImportSuccess})
 
   return (
     <div className='absolute top-4 right-4 flex gap-2'>
@@ -17,7 +17,7 @@ export default function ManageDataButton({ refines, onImportSuccess }: ManageDat
       <Button onPress={handleClick} variant='ghost' color='default'>
         Import <DocumentArrowDownIcon className='w-4 h-4' />
       </Button>
-      <Button onPress={exportTrades} variant='ghost' color='default'>
+      <Button onPress={exportData} variant='ghost' color='default'>
         Export <DocumentArrowUpIcon className='w-4 h-4' />
       </Button>
     </div>

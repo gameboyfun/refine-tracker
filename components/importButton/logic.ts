@@ -12,11 +12,11 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
     })
   }
 
-  const importTrades = (importData: boolean[]) => {
+  const importData = (importData: boolean[]) => {
     onImportSuccess(importData)
     addToast({
-      title: 'Trades Imported',
-      description: `Successfully imported ${importData.length} trades`
+      title: 'Refines Imported',
+      description: `Successfully imported ${importData.length} refines`
     })
   }
 
@@ -35,7 +35,7 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
         const content = e.target?.result as string
         const data = JSON.parse(content) as boolean[]
 
-        importTrades(data)
+        importData(data)
       } catch (error) {
         console.log('🚀 ~ handleFileSelect ~ error:', error)
         handleImportError('Invalid JSON format or structure')
@@ -54,7 +54,7 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
     fileInputRef.current?.click()
   }
 
-  const exportTrades = () => {
+  const exportData = () => {
     const dataStr = JSON.stringify(refines)
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
 
@@ -75,6 +75,6 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
     fileInputRef,
     handleFileSelect,
     handleClick,
-    exportTrades
+    exportData
   }
 }

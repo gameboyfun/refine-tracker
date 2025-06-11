@@ -53,7 +53,7 @@ export const RefineHistory = ({
                   <p className='text-slate-400 text-center py-8'>No refines recorded</p>
                 </div>
               ) : (
-                <ScrollShadow className='h-[400px] lg:h-[380px] scrollbar-hide'>
+                <ScrollShadow className='pb-6 scrollbar-hide'>
                   <div className='space-y-3'>
                     {recentRefines.map((refine, index) => {
                       const classType = refine ? 'success' : 'danger'
