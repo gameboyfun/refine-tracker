@@ -1,4 +1,5 @@
 interface ChartProps {
+  onOpen: () => void
   refines: boolean[]
 }
 

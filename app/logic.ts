@@ -1,12 +1,13 @@
 'use client'
 
-import { addToast } from '@heroui/react'
+import { addToast, useDisclosure } from '@heroui/react'
 import dayjs from 'dayjs'
 import throttle from 'lodash/throttle'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export default function useBusinessLogic() {
   const [refines, setRefines] = useState<boolean[]>([])
+  const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
   const addRefine = useCallback(
     throttle((type: SuccessType) => {
@@ -72,6 +73,9 @@ export default function useBusinessLogic() {
     addRefine,
     setRefines,
     getStats,
-    editRefine
+    editRefine,
+    isOpen,
+    onOpen,
+    onOpenChange
   }
 }

@@ -8,7 +8,8 @@ import { Chart } from '@/components/chart'
 import ManageDataSection from '@/components/importButton'
 
 export default function Home() {
-  const { refines, addRefine, setRefines, getStats, editRefine } = useBusinessLogic()
+  const { refines, addRefine, setRefines, getStats, editRefine, isOpen, onOpen, onOpenChange } =
+    useBusinessLogic()
   const { successRefines, failRefines, totalRefines, successRate, successColor } = getStats()
 
   return (
@@ -40,10 +41,13 @@ export default function Home() {
       </div>
 
       {/* Chart and History */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-        <Chart refines={refines} />
-        <RefineHistory refines={refines} onEditRefine={editRefine} />
-      </div>
+      <Chart onOpen={onOpen} refines={refines} />
+      <RefineHistory
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        refines={refines}
+        onEditRefine={editRefine}
+      />
     </div>
   )
 }

@@ -8,9 +8,10 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
-import { Card, CardBody, CardHeader, Select, SelectItem } from '@heroui/react'
+import { Card, CardBody, CardHeader, Select, SelectItem, Button } from '@heroui/react'
+import { ClockIcon } from '@heroicons/react/24/outline'
 
-export const Chart = ({ refines }: ChartProps) => {
+export const Chart = ({ onOpen, refines }: ChartProps) => {
   const [maxEntries, setMaxEntries] = useState('')
   const periods = [
     { label: 'All', key: '' },
@@ -85,28 +86,30 @@ export const Chart = ({ refines }: ChartProps) => {
 
   // Add EMA12 to the data (only for entries that have EMA12 calculated)
   const chartData = useMemo(() => {
-  const emaValuesForChart = maxEntries
-    ? ema12Values.slice(-Number(maxEntries))
-    : ema12Values;
+    const emaValuesForChart = maxEntries ? ema12Values.slice(-Number(maxEntries)) : ema12Values
 
-  return filteredData.map((item, index) => ({
-    ...item,
-    ema12: emaValuesForChart[index] !== undefined ? emaValuesForChart[index] : null,
-  }));
-}, [maxEntries, ema12Values, filteredData]);
+    return filteredData.map((item, index) => ({
+      ...item,
+      ema12: emaValuesForChart[index] !== undefined ? emaValuesForChart[index] : null
+    }))
+  }, [maxEntries, ema12Values, filteredData])
 
+  const shouldShowEMA12 = chartData.length - 1 >= 12
 
   const handleMaxEntriesChange = (value: string) => {
     setMaxEntries(value)
   }
 
-  if (refines.length === 1) {
+  if (refines.length < 1) {
     return (
       <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
-        <CardHeader>
+        <CardHeader className='p-6 flex justify-between'>
           <h3 className='text-2xl font-semibold text-white'>Refining Performance</h3>
+          <Button variant='light' isIconOnly onPress={onOpen}>
+            <ClockIcon className='w-4 h-4' />
+          </Button>
         </CardHeader>
-        <CardBody className='flex items-center justify-center h-64'>
+        <CardBody className='p-6 flex items-center justify-center h-64'>
           <p className='text-slate-400'>
             No refines recorded yet. Start refines to see your performance!
           </p>
@@ -117,8 +120,11 @@ export const Chart = ({ refines }: ChartProps) => {
 
   return (
     <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
-      <CardHeader className='p-6'>
+      <CardHeader className='p-6 flex justify-between'>
         <h3 className='text-2xl font-semibold text-white'>Refining Performance</h3>
+        <Button variant='light' isIconOnly onPress={onOpen}>
+          <ClockIcon className='w-4 h-4' />
+        </Button>
       </CardHeader>
       <CardBody className='p-6'>
         <div className='space-y-4'>
@@ -187,6 +193,11 @@ export const Chart = ({ refines }: ChartProps) => {
           </ResponsiveContainer>
           <div className='text-xs text-slate-400 mt-2'>
             <div>Success refines: +1 point • Failed refines: -1 point</div>
+            {shouldShowEMA12 ? (
+              <div>EMA12: 12-period Exponential Moving Average (orange dashed line)</div>
+            ) : (
+              <div>EMA12: Requires at least 12 refines to display ({chartData.length - 1}/12)</div>
+            )}
           </div>
         </div>
       </CardBody>
