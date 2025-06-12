@@ -3,15 +3,21 @@
 import { addToast, useDisclosure } from '@heroui/react'
 import dayjs from 'dayjs'
 import throttle from 'lodash/throttle'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useRefineStore } from '../store/refineStore'
 
 export default function useBusinessLogic() {
-  const [refines, setRefines] = useState<boolean[]>([])
-  const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  const [loading, setLoading] = useState(true)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { refines, editRefineToStore, addRefineToStore } = useRefineStore()
+
+  useEffect(() => {
+    setLoading(false)
+  }, [refines])
 
   const addRefine = useCallback(
     throttle((type: SuccessType) => {
-      setRefines((prev) => [...prev, type === 'success'])
+      addRefineToStore(type === 'success')
 
       addToast({
         title: type === 'success' ? 'Refine Successful' : 'Refine Failed',
@@ -54,11 +60,7 @@ export default function useBusinessLogic() {
   }
 
   const editRefine = (index: number, newType: SuccessType) => {
-    setRefines((prev) => {
-      const temp = [...prev]
-      temp[refines.length - 1 - index] = newType === 'success'
-      return temp
-    })
+    editRefineToStore(refines.length - 1 - index, newType === 'success')
 
     addToast({
       title: 'Refine Updated',
@@ -71,11 +73,11 @@ export default function useBusinessLogic() {
   return {
     refines,
     addRefine,
-    setRefines,
     getStats,
     editRefine,
     isOpen,
     onOpen,
-    onOpenChange
+    onOpenChange,
+    loading
   }
 }

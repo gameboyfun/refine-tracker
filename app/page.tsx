@@ -8,7 +8,7 @@ import { Chart } from '@/components/chart'
 import ManageDataSection from '@/components/importButton'
 
 export default function Home() {
-  const { refines, addRefine, setRefines, getStats, editRefine, isOpen, onOpen, onOpenChange } =
+  const { refines, addRefine, getStats, editRefine, isOpen, onOpen, onOpenChange, loading } =
     useBusinessLogic()
   const { successRefines, failRefines, totalRefines, successRate, successColor } = getStats()
 
@@ -23,7 +23,7 @@ export default function Home() {
           <h1 className='text-4xl font-bold text-white mb-2'>Refine Tracker</h1>
           <p className='text-blue-200'>Monitor your refine performance and success rate</p>
         </div>
-        <ManageDataSection refines={refines} onImportSuccess={(value) => setRefines(value)} />
+        <ManageDataSection refines={refines} />
       </div>
 
       {/* Action Buttons */}
@@ -41,7 +41,7 @@ export default function Home() {
       </div>
 
       {/* Chart and History */}
-      <Chart onOpen={onOpen} refines={refines} />
+      <Chart onOpen={onOpen} loading={loading} />
       <RefineHistory
         isOpen={isOpen}
         onOpenChange={onOpenChange}

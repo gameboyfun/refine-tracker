@@ -1,8 +1,10 @@
+import { useRefineStore } from '@/store/refineStore'
 import { addToast } from '@heroui/react'
 import { useRef } from 'react'
 
-export default function useBusinessLogic({ refines, onImportSuccess }: ManageDataButtonProps) {
+export default function useBusinessLogic({ refines }: ManageDataButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { setRefinesToStore } = useRefineStore()
 
   const handleImportError = (message: string) => {
     addToast({
@@ -13,7 +15,7 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
   }
 
   const importData = (importData: boolean[]) => {
-    onImportSuccess(importData)
+    setRefinesToStore(importData)
     addToast({
       title: 'Refines Imported',
       description: `Successfully imported ${importData.length} refines`
@@ -58,7 +60,7 @@ export default function useBusinessLogic({ refines, onImportSuccess }: ManageDat
     const dataStr = JSON.stringify(refines)
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
 
-    const exportFileDefaultName = `refines-history-${new Date().toISOString().split('T')[0]}.json`
+    const exportFileDefaultName = `refines-history.json`
 
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)

@@ -2,8 +2,8 @@ import { Button } from '@heroui/react'
 import useBusinessLogic from './logic'
 import { DocumentArrowDownIcon, DocumentArrowUpIcon } from '@heroicons/react/24/outline'
 
-export default function ManageDataButton({ refines, onImportSuccess }: ManageDataButtonProps) {
-  const { fileInputRef, handleFileSelect, handleClick, exportData } = useBusinessLogic({ refines, onImportSuccess})
+export default function ManageDataButton({ refines }: ManageDataButtonProps) {
+  const { fileInputRef, handleFileSelect, handleClick, exportData } = useBusinessLogic({ refines})
 
   return (
     <div className='absolute top-4 right-4 flex gap-2'>

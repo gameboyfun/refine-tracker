@@ -61,7 +61,7 @@ export const RefineHistory = ({
             <Divider className='my-4' />
             <DrawerBody>
               {recentRefines.length === 0 ? (
-                <div className='h-[400px] lg:h-[380px] flex flex-col justify-center'>
+                <div className='flex flex-col justify-center h-full'>
                   <p className='text-slate-400 text-center py-8'>No refines recorded</p>
                 </div>
               ) : (
