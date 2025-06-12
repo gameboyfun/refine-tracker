@@ -1,6 +1,6 @@
 interface ChartProps {
   onOpen: () => void
-  refines: boolean[]
+  loading: boolean
 }
 
 interface CumulativeData {

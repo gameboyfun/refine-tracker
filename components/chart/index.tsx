@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react'
 import {
   LineChart,
   Line,
@@ -8,107 +7,70 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
-import { Card, CardBody, CardHeader, Select, SelectItem, Button } from '@heroui/react'
-import { ClockIcon } from '@heroicons/react/24/outline'
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Select,
+  SelectItem,
+  Button,
+  Spinner,
+  Tooltip as TooltipHeroUI
+} from '@heroui/react'
+import { ClockIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { useRefineStore } from '@/store/refineStore'
+import useBusinessLogic from './logic'
 
-export const Chart = ({ onOpen, refines }: ChartProps) => {
-  const [maxEntries, setMaxEntries] = useState('')
-  const periods = [
-    { label: 'All', key: '' },
-    { label: '15', key: '15' },
-    { label: '30', key: '30' },
-    { label: '45', key: '45' },
-    { label: '60', key: '60' },
-    { label: '100', key: '100' },
-    { label: '200', key: '200' },
-    { label: '300', key: '300' }
-  ]
+export const Chart = ({ onOpen, loading = true }: ChartProps) => {
+  const {
+    periods,
+    refines,
+    filteredData,
+    chartData,
+    shouldShowEMA12,
+    handleMaxEntriesChange,
+    clearHistory
+  } = useBusinessLogic()
 
-  // Calculate EMA12
-  const calculateEMA = (data: number[], period: number) => {
-    const multiplier = 2 / (period + 1)
-    const ema = []
-
-    if (data.length < period) return [] // Return empty if not enough data
-
-    // Calculate SMA for the first 'period' values
-    const smaSum = data.slice(0, period).reduce((sum, val) => sum + val, 0)
-    ema[period - 1] = smaSum / period
-
-    // Calculate EMA for remaining values
-    for (let i = period; i < data.length; i++) {
-      ema[i] = data[i] * multiplier + ema[i - 1] * (1 - multiplier)
-    }
-
-    return ema
-  }
-
-  // Create cumulative success data
-  const cumulativeData = useMemo(
-    () =>
-      refines.reduce<CumulativeData[]>(
-        (acc, refine, index) => {
-          const newScore: number = refine ? 1 : -1
-          const previousScore = acc[index].score
-
-          return [
-            ...acc,
-            {
-              time: acc.length,
-              score: previousScore + newScore,
-              type: refine ? 'success' : 'fail'
-            }
-          ]
-        },
-        [
-          {
-            time: 0,
-            score: 0,
-            type: 'init'
-          }
-        ]
-      ),
-    [refines]
-  )
-
-  // Filter to show only the specified number of newest entries
-  const filteredData = !maxEntries ? cumulativeData : cumulativeData.slice(-maxEntries)
-
-  // Calculate EMA12 for the filtered scores
-  const ema12Values = useMemo(
-    () =>
-      calculateEMA(
-        cumulativeData.map((item) => item.score),
-        12
-      ),
-    [cumulativeData]
-  )
-
-  // Add EMA12 to the data (only for entries that have EMA12 calculated)
-  const chartData = useMemo(() => {
-    const emaValuesForChart = maxEntries ? ema12Values.slice(-Number(maxEntries)) : ema12Values
-
-    return filteredData.map((item, index) => ({
-      ...item,
-      ema12: emaValuesForChart[index] !== undefined ? emaValuesForChart[index] : null
-    }))
-  }, [maxEntries, ema12Values, filteredData])
-
-  const shouldShowEMA12 = chartData.length - 1 >= 12
-
-  const handleMaxEntriesChange = (value: string) => {
-    setMaxEntries(value)
-  }
-
-  if (refines.length < 1) {
-    return (
-      <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
-        <CardHeader className='p-6 flex justify-between'>
-          <h3 className='text-2xl font-semibold text-white'>Refining Performance</h3>
+  const renderCardHeader = () => (
+    <CardHeader className='p-6 flex justify-between'>
+      <h3 className='text-2xl font-semibold text-white'>Refining Performance</h3>
+      <div>
+        <TooltipHeroUI content='History' placement='bottom' showArrow={true}>
           <Button variant='light' isIconOnly onPress={onOpen}>
             <ClockIcon className='w-4 h-4' />
           </Button>
-        </CardHeader>
+        </TooltipHeroUI>
+        {!loading && Boolean(refines.length) && (
+          <TooltipHeroUI content='Clear History' placement='bottom' showArrow={true}>
+            <Button variant='light' color='danger' isIconOnly onPress={clearHistory}>
+              <TrashIcon className='w-4 h-4' />
+            </Button>
+          </TooltipHeroUI>
+        )}
+      </div>
+    </CardHeader>
+  )
+
+  if (loading) {
+    return (
+      <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
+        {renderCardHeader()}
+        <CardBody className='p-6 flex items-center justify-center h-64'>
+          <Spinner
+            classNames={{ base: 'absolute flex align-center justify-center' }}
+            variant='spinner'
+            label='Loading...'
+          />
+        </CardBody>
+      </Card>
+    )
+  }
+
+  if (!loading && refines.length === 0) {
+    return (
+      <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
+        {renderCardHeader()}
         <CardBody className='p-6 flex items-center justify-center h-64'>
           <p className='text-slate-400'>
             No refines recorded yet. Start refines to see your performance!
@@ -120,12 +82,7 @@ export const Chart = ({ onOpen, refines }: ChartProps) => {
 
   return (
     <Card className='bg-slate-800/50 border-slate-700 backdrop-blur-sm'>
-      <CardHeader className='p-6 flex justify-between'>
-        <h3 className='text-2xl font-semibold text-white'>Refining Performance</h3>
-        <Button variant='light' isIconOnly onPress={onOpen}>
-          <ClockIcon className='w-4 h-4' />
-        </Button>
-      </CardHeader>
+      {renderCardHeader()}
       <CardBody className='p-6'>
         <div className='space-y-4'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
