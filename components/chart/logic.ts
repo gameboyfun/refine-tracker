@@ -1,4 +1,5 @@
 import { useRefineStore } from '@/store/refineStore'
+import { useDisclosure } from '@heroui/react'
 import { useMemo, useState } from 'react'
 
 export default function useBusinessLogic() {
@@ -14,6 +15,7 @@ export default function useBusinessLogic() {
     { label: '200', key: '200' },
     { label: '300', key: '300' }
   ]
+  const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
   // Calculate EMA12
   const calculateEMA = (data: number[], period: number) => {
@@ -102,6 +104,9 @@ export default function useBusinessLogic() {
     chartData,
     shouldShowEMA12,
     handleMaxEntriesChange,
-    clearHistory
+    clearHistory,
+    isOpen,
+    onOpen,
+    onOpenChange
   }
 }
